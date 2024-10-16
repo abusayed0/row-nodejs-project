@@ -1,39 +1,27 @@
 /* 
-Title: Uptime monitoring applicaion
+Title: Uptime monitoring applicaion: Entry point
 */
 
 // dependencies 
-const http = require("http");
-const { handleReqRes } = require("./helpers/handleReqRes");
-const config = require("./helpers/enviroment");
-const data = require("./lib/data");
+const server = require("./lib/server");
+const workers = require("./lib/workers");
 
-
-//testing file system
-data.delete("test", "data", function(err){
-    console.log(`${err}`);
-})
 
 
 // module scraffolding: aspp object
 const app = {};
 
 
-app.config = config;
+app.init = function(){
+    //start the server
+    server.init()
+    
+    //start the workers
+    workers.init()
+}
 
+app.init()
 
+//export the module
 
-app.handleReqRes = handleReqRes;
-
-//create server
-app.createServer = () => {
-    const server = http.createServer(app.handleReqRes);
-    server.listen(app.config.port, () => {
-        console.log(`Server running on port: ${app.config.port}`);
-    });
-};
-
-
-
-//star the server
-app.createServer();
+module.exports = app;
